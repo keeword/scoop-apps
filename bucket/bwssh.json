@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "description": "Windows SSH agent backed by your Bitwarden vault, with notification approvals and Windows Hello",
+    "homepage": "https://github.com/luoxiaoxin123/bwssh",
+    "license": "Apache-2.0",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/luoxiaoxin123/bwssh/releases/download/v0.2.0/bwssh-setup-0.2.0.exe",
+            "hash": "d2a3c14e6fb94a342d51cbfb5e135f256ac9bc9777d8e181c8c8021e202889ad"
+        }
+    },
+    "innosetup": true,
+    "bin": "bwssh.exe",
+    "shortcuts": [
+        [
+            "bwssh.exe",
+            "bwssh"
+        ]
+    ],
+    "uninstaller": {
+        "script": "if ($cmd -eq 'uninstall') { Start-Process -FilePath \"$dir\\bwssh.exe\" -ArgumentList '--uninstall-cleanup' -Wait -WindowStyle Hidden }"
+    },
+    "checkver": {
+        "github": "https://github.com/luoxiaoxin123/bwssh"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/luoxiaoxin123/bwssh/releases/download/v$version/bwssh-setup-$version.exe"
+            }
+        }
+    }
+}
