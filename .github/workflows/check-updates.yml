@@ -1,0 +1,63 @@
+name: Update app manifests
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-app-updates
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Configure Scoop directories
+        shell: pwsh
+        run: |
+          "SCOOP=$env:RUNNER_TEMP/scoop-updater" >> $env:GITHUB_ENV
+          "SCOOP_GLOBAL=$env:RUNNER_TEMP/scoop-updater-global" >> $env:GITHUB_ENV
+          "XDG_CONFIG_HOME=$env:RUNNER_TEMP/scoop-updater-config" >> $env:GITHUB_ENV
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Check out official Scoop maintenance scripts
+        uses: actions/checkout@v4
+        with:
+          repository: ScoopInstaller/Scoop
+          ref: e6aa3b366bdee8ed138c1e0f7b85192ebdd35d0f
+          path: .scoop-tools
+          persist-credentials: false
+      - name: Validate current manifests
+        shell: pwsh
+        run: ./scripts/Test-Bucket.ps1
+      - name: Update manifests with official checkver
+        shell: pwsh
+        env:
+          SCOOP_GH_TOKEN: ${{ github.token }}
+        run: |
+          & ./.scoop-tools/bin/checkver.ps1 -Dir ./bucket -Update -ThrowError
+      - name: Validate updated manifests and test validation
+        shell: pwsh
+        run: |
+          ./scripts/Test-Bucket.ps1
+          ./scripts/Test-Bucket.test.ps1
+      - name: Create or update the app updates pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ github.token }}
+          base: ${{ github.event.repository.default_branch }}
+          branch: automation/app-updates
+          delete-branch: true
+          add-paths: bucket/*.json
+          commit-message: 'chore: update app manifests'
+          title: 'chore: update app manifests'
+          body: |
+            Scoop 官方 `checkver.ps1 -Update` 检测到版本变化，并更新了应用版本、下载地址和 SHA-256。
+
+            已通过清单 schema 校验及校验脚本测试。请审核上游 Release，并在对应架构的 Windows 测试环境中验证安装、启动、更新和卸载后合并。

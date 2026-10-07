@@ -12,3 +12,6 @@ jobs:
       - name: Check manifest JSON
         shell: pwsh
         run: ./scripts/Test-Bucket.ps1
+      - name: Test manifest validation
+        shell: pwsh
+        run: ./scripts/Test-Bucket.test.ps1
