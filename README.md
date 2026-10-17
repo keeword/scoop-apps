@@ -5,6 +5,7 @@
 | 应用 | 用途 | 支持架构 | 上游项目 |
 | --- | --- | --- | --- |
 | `bwssh` | 使用 Bitwarden 密钥库的 SSH agent，支持通知审批和 Windows Hello | x64 | [bwssh](https://github.com/luoxiaoxin123/bwssh) |
+| `mdterm` | 终端 Markdown 阅读器，支持语法高亮和交互导航 | x64、ARM64 | [mdterm](https://github.com/bahdotsh/mdterm) |
 | `pebrel` | GPU 加速终端，支持 SSH 和分屏 | x64、ARM64 | [Pebrel](https://github.com/Kuddev/pebrel) |
 
 ## 使用
@@ -14,6 +15,7 @@
 ```powershell
 scoop bucket add myapps https://github.com/keeword/scoop-apps
 scoop install myapps/bwssh
+scoop install myapps/mdterm
 scoop install myapps/pebrel
 ```
 
@@ -22,6 +24,7 @@ scoop install myapps/pebrel
 ```powershell
 scoop update
 scoop update bwssh
+scoop update mdterm
 scoop update pebrel
 ```
 
@@ -66,7 +69,7 @@ scoop uninstall pebrel
 - 自动更新统一使用 `automation/app-updates` 分支，后续运行会更新已有 PR。不要在此分支提交手工修改；没有清单变化时不会新建 PR。
 - 内置 Token 创建的 PR 通常不会触发其他工作流，因此更新工作流会在创建 PR 前完成清单校验和校验脚本测试。应用功能和安装仍需手动验证。
 
-现有两个应用均配置了 `checkver.github` 和 `autoupdate`；后续可使用 Scoop 支持的其他检查来源。维护脚本固定到 [Scoop 提交 `e6aa3b3`](https://github.com/ScoopInstaller/Scoop/tree/e6aa3b366bdee8ed138c1e0f7b85192ebdd35d0f)，直接检出并运行，无需在 runner 上安装 Scoop。
+现有应用均配置了 `checkver.github` 和 `autoupdate`；后续可使用 Scoop 支持的其他检查来源。维护脚本固定到 [Scoop 提交 `e6aa3b3`](https://github.com/ScoopInstaller/Scoop/tree/e6aa3b366bdee8ed138c1e0f7b85192ebdd35d0f)，直接检出并运行，无需在 runner 上安装 Scoop。
 
 本地已安装 Scoop 时，也可在仓库根目录手动检查或更新：
 
